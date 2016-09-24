@@ -25,5 +25,5 @@ if __name__ == '__main__':
     
     s = Near(question_data.get_question("91ddbff126fca69a5fcd51135b7d272b"),question_data)
 
-    print s
+    #print s
 
