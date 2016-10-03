@@ -1,5 +1,12 @@
+#Finding near user or question using hamming distance.
 from data_extract import *
 from operator import itemgetter, attrgetter
+
+
+'''
+Finding near user or question using hamming distance.
+
+'''
 
 def Hamming_dis(word1,word2):
     dis = 0
