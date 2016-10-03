@@ -15,11 +15,11 @@ class Question:
         self.average_click_like = average_click_like
         self.ans_user = []
         self.unans_user = []
-    def add_user(self,user,ans):
+    def add_user(self,user_id,ans):
         if ans == "1":
-            self.ans_user.append(user)
+            self.ans_user.append(user_id)
         elif ans == "0":
-            self.unans_user.append(user)
+            self.unans_user.append(user_id)
 
 class Question_data:
     def __init__(self,qusetion_info_path,invited_info_path):
@@ -65,11 +65,11 @@ class User:
         self.letter_info = letter_info
         self.ans_question = []
         self.unans_question = []
-    def add_question(self,question,ans):
+    def add_question(self,question_id,ans):
         if ans == "1":
-            self.ans_question.append(question)
+            self.ans_question.append(question_id)
         elif ans == "0":
-            self.unans_question.append(question)
+            self.unans_question.append(question_id)
 
 class User_data:
     def __init__(self,user_info_path,invited_info_path):
