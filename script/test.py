@@ -4,10 +4,10 @@
 from recsys.algorithm.factorize import SVD
 svd = SVD()
 svd.load_data(filename='../invited_info_train_question_sort.txt', sep='\t', format={'col':0, 'row':1, 'value':2, 'ids':str})
-k = 100
-svd.compute(k=k,savefile='/home/xiatian/RecommandSystem/tmp/weight')
+k = 200
+svd.compute(k=k,savefile='../tmp/weight')
 
-svd2 = SVD(filename='/home/xiatian/RecommandSystem/tmp/weight') # Loading already computed SVD model
+svd2 = SVD(filename='../tmp/weight') # Loading already computed SVD model
 
 output_path = "./output.txt"
 output_file = open(output_path,'w')

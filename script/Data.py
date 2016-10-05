@@ -3,7 +3,7 @@ import pickle
 import sys
 import codecs
 import scipy
-
+from scipy import sparse
 
 
 class Data(object):
@@ -22,8 +22,6 @@ class Data(object):
         self.vals = []
         self.rows = []
         self.cols = []
-        self.row_max = 0
-        self.col_max = 0
         self.is_int = False 
     def set(self,data,extend=False):
         '''
@@ -91,7 +89,13 @@ class Data(object):
             col_dict: a dictory Mapping names in col to integer
         '''
         return self.get_in_scipy_csr_sparse(not_map,row_dict,col_dict).toarray() 
-        
+    
+    def get_mask(self):
+        '''
+        score matrix's indicator
+        '''
+        return scipy.sparse.csr_matrix( scipy.sparse.coo_matrix( (np.ones(len(self.rows)) ,( np.array(self.rows),np.array(self.cols) ) ) ) ).toarray()
+    
     def add_tuple(self, tuple):
         '''
         add data to this data class.
@@ -135,6 +139,8 @@ class Data(object):
             self._load_pickle(path)
         else:
             i = 0 
+            self.row_max = 0
+            self.col_max = 0
             for line in codecs.open(path, 'r', 'utf8'):
                 data = line.strip('\r\n').split(sep)
                 value = None

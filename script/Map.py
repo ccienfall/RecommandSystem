@@ -64,8 +64,7 @@ def Map_load(name):
         try:
             f = open('../map_question.txt','r')
         except:
-            print("Missing file: map_question.txt, run Map_file to generate it.")
-            break
+            raise ValueError("Missing file: map_question.txt, run Map_file to generate it.") 
         for i in f:
             i = i.strip('\r\n').split('\t')
             d[i[0]] = int(i[1])
@@ -74,8 +73,7 @@ def Map_load(name):
         try:
             f = open('../map_user.txt','r')
         except:
-            print("Missing file: map_question.txt, run Map_file to generate it.")
-            break
+            raise ValueError("Missing file: map_question.txt, run Map_file to generate it.")
         for i in f:
             i = i.strip('\r\n').split('\t')
             d[i[0]] = int(i[1])
