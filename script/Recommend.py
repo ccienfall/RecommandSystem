@@ -2,20 +2,29 @@
 import numpy as np
 from Map import *
 from Data import *
+from RBM import *
 from Factorize import *
-import sys
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     qd = Map_load('q')
     ud = Map_load('u')
     mf = MF()
-    mf.load_data(path='../map_invited_info.txt', sep='\t', format={'col':0,'row':1, 'value':2, 'ids':'int'})
-    mf.factorize(k=30,iter=200,alpha=0.001)
-    mf.save_weight('weight30.pkl')
-    #mf.load_weight('weight1.pkl')
+    mf.load_data(path='../map_invited_info.txt', sep='\t', format={'col':0,'row':1, 'value':2, 'ids':'int'},split=False)
+    #mf.load_weight('tempweight_1000.pkl')
+    mf.factorize(k=50,iter=1999,pp=True)
+    mf.save_weight('weight30_iter1999.pkl')
     output_path = "./output.txt"
     output_file = open(output_path,'w')
     validate_file = file("../validate_nolabel.txt")
-
+    
     for line in validate_file:
         line = line.strip('\r\n').split(',')
         question_id = line[0]

@@ -23,6 +23,7 @@ class Data(object):
         self.rows = []
         self.cols = []
         self.is_int = False 
+        self.split = False
     def set(self,data,extend=False):
         '''
         Set data(a list) to this data class.
@@ -95,6 +96,64 @@ class Data(object):
         score matrix's indicator
         '''
         return scipy.sparse.csr_matrix( scipy.sparse.coo_matrix( (np.ones(len(self.rows)) ,( np.array(self.rows),np.array(self.cols) ) ) ) ).toarray()
+        
+    def get_in_scipy_csr_sparse_valid(self,not_map = True,row_dict=None,col_dict=None):
+        '''
+        get data in scipy.sparse.csr_matrix formate
+        
+        Parameter:
+            row_dict: a dictory Mapping names in row to integer
+            col_dict: a dictory Mapping names in col to integer
+        '''
+        try:
+            assert self.split==True
+        except:
+            raise ValueError('you should run Splitdata first.')
+        # TODO:: it is not necessary to pass on dictory
+        if not not_map:
+            if not row_dict or not row_dict:
+                raise ValueError('You must pass on map function.')
+            else:
+                '''
+                TODO : Deal with dictory
+                '''
+                
+                return scipy.sparse.csr_matrix( scipy.sparse.coo_matrix( (self.vals,(self.rows,self.cols)) ) )
+        else:
+            if not self.is_int:
+                raise ValueError('Since you pass row and col on as no integer,you should set not_map False and pass dictory on.')
+            else:
+                '''
+                for line in self._data:
+                    try:
+                        value,row,col = line
+                    except:
+                        raise ValueError
+                    vals.append(value)
+                    rows.append(row)
+                    cols.append(col)
+                '''
+                return scipy.sparse.csr_matrix( scipy.sparse.coo_matrix( (self.valid_vals,(self.valid_rows,self.valid_cols)) ) )
+        
+    def get_in_numpy_format_valid(self,not_map = True,row_dict=None,col_dict=None):
+        '''
+        get data in numpy formate
+        
+        Parameter:
+            row_dict: a dictory Mapping names in row to integer
+            col_dict: a dictory Mapping names in col to integer
+        '''
+        return self.get_in_scipy_csr_sparse_valid(not_map,row_dict,col_dict).toarray() 
+    
+    def get_mask_valid(self):
+        '''
+        score matrix's indicator
+        '''
+        try:
+            assert self.split==True
+        except:
+            raise ValueError('you should run Splitdata first.')
+        return scipy.sparse.csr_matrix( scipy.sparse.coo_matrix( (np.ones(len(self.valid_rows)) ,( np.array(self.valid_rows),np.array(self.valid_cols) ) ) ) ).toarray()
     
     def add_tuple(self, tuple):
         '''
@@ -117,6 +176,37 @@ class Data(object):
         self.vals.append(value)
         self.rows.append(row_id)
         self.cols.append(col_id)
+    
+    def SplitData(self, percent = 0.8):
+        '''
+        Split the dataset into two parts
+        
+        Parameter:
+            percent : how much percent training set hold
+        '''
+        try:
+            assert self.split == False
+        except:
+            raise ValueError("Data set has been splited")
+        dividePoint = np.int64(len(self.vals) * percent)
+        self.valid_vals = self.vals[dividePoint:]
+        self.valid_rows = self.rows[dividePoint:]
+        self.valid_cols = self.cols[dividePoint:]
+        self.vals = self.vals[:dividePoint]
+        self.rows = self.rows[:dividePoint]
+        self.cols = self.cols[:dividePoint]
+        self.split = True
+        #Matrix size was determined by training data. Spliting data may diminish matrix size, which case index-out-of-range error.
+        try:
+            self.add_tuple((0,self.row_max, self.col_max))
+        except:
+            raise ValueError('Missing row_max and row_col, you should run load first.')
+        try:
+            self.valid_vals.append(0.0)
+            self.valid_rows.append(self.row_max)
+            self.valid_cols.append(self.col_max)
+        except:
+            raise ValueError('Missing row_max and row_col, you should run load first.')
         
     def load(self, path, force=True, sep='\t', format=None, pickle=False):
         """
